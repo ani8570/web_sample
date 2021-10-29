@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wisenut.mapper.ReviewMapper">
+	<!-- 추가 작성자 : 이지훈 - 검색 처리 위한 작성 -->
+	<sql id="criteria">
+		<trim prefix="(" suffix=") AND " prefixOverrides="OR">
+			<foreach item="type" collection="typeArr">
+				<trim prefix="OR">
+					<choose>
+						<!-- 글 제목 -->
+						<when test="type== 'T'.toString()">
+							title like '%' || #{keyword} || '%'
+						</when>
+						<!-- 난이도 -->
+						<when test="type== 'D'.toString()">
+							difficulty like '%' || #{keyword} || '%'
+						</when>
+						<!-- 작성자 -->
+						<when test="type== 'W'.toString()">
+							writer like '%' || #{keyword} || '%'
+						</when>
+						<!-- 리뷰 -->
+						<when test="type== 'R'.toString()">
+							review like '%' || #{keyword} || '%'
+						</when>
+					</choose> <!-- end choose -->
+				</trim><!--end trim OR -->
+			</foreach> <!--foreach -->
+		</trim> <!--end trim pre... -->
+	</sql>
+	<!-- 추가 작성자 : 조윤희 - 전체 데이터 개수 처리 위해 작성
+				      이지훈 - 검색 처리를 위한 sql절 -->
+	<select id="getTotalCount" resultType="int">
+		select count(*) from REVIEW_TABLE
+		where
+		<include refid="criteria">
+		</include>
+		bno > 0
+	</select>
+	<!-- 전체 데이터 개수 처리 위해 작성 완료 -->
+
+	<select id="getList" resultType="com.wisenut.domain.ReviewVO">
+ <![CDATA[
+ select * from REVIEW_TABLE where bno>0
+  ]]>
+	</select>
+	<insert id="insert">
+		insert into REVIEW_TABLE(bno, store_num, title,
+		difficulty, writer,
+		review, password)
+		values (seq_review.nextval,
+		#{store_num},#{title},#{difficulty},#{writer},#{review},#{password})
+	</insert>
+
+	<insert id="insertSelectKey">
+		<selectKey keyProperty="bno" order="BEFORE"
+			resultType="long">
+			select seq_review.nextval from dual
+		</selectKey>
+		insert into REVIEW_TABLE(bno, store_num, title, difficulty, writer,
+		review, password)
+		values (#{bno},
+		#{store_num},#{title},#{difficulty},#{writer},
+		#{review},#{password})
+	</insert>
+
+	<select id="read" resultType="com.wisenut.domain.ReviewVO">
+		select * from REVIEW_TABLE where
+		bno = #{bno}
+	</select>
+	<delete id="delete">
+		delete REVIEW_TABLE where bno = #{bno}
+	</delete>
+	<update id="update">
+		update REVIEW_TABLE
+		set title= #{title},
+		difficulty =
+		#{difficulty},
+		review=#{review},
+		updateDate = sysdate
+		where bno = #{bno}
+	</update>
+
+	<!-- 추가작성자 : 조윤희 - 리뷰 목록 페이징 처리를 위해 select 태그 추가, 
+				     이지훈 - 검색 처리를 위한 sql절 
+		추가 작성 -->
+	<select id="getListWithPaging"
+		resultType="com.wisenut.domain.ReviewVO">
+		<![CDATA[
+			select bno, store_num, title, difficulty, 
+				   writer, review, password, regdate, updateDate
+			from (
+				select
+					/*+ INDEX_DESC(review_table review_index) */
+					rownum m, bno, store_num, title, difficulty, 
+				   writer, review, password, regdate, updateDate
+				from review_table
+				where 
+				]]>
+		<include refid="criteria">
+		</include> 	
+		<![CDATA[		
+			rownum <= #{pageNum} * #{amount}
+			)
+		where m > (#{pageNum} - 1) * #{amount}
+		]]>
+	</select>
+
+</mapper> 
+ 
