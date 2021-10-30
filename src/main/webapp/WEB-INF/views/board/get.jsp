@@ -45,7 +45,7 @@
 								</div>
 	                        </div>
 	                        
-	                        <div class="form-group">    
+	                        	<div class="form-group">    
 	      						<button data-oper='modify' class="btn btn-default" style='width: 20%; border: none;
 	                              border-radius: 1rem; padding: 1.5%; background: #dc3545; font-weight: 600; color: #fff; 
 	                              cursor: pointer'>글 수정</button>
@@ -54,28 +54,27 @@
 	                             	 border-radius: 1rem; padding: 1.5%; background: #0000CD; font-weight: 600; color: #fff; 
 	                              		cursor: pointer; heigth:15px'> 리뷰 목록으로 
 	                       	 	</button>       
-		        				<!--<a href="/board/list" style='color:white'>리뷰 목록으로</a>-->
-		        				<form id='operForm' action="/board/modify" method="get">    		  
+		        				
+		        		<form id='operForm' action="/board/modify" method="get">    		  
 				      				<input type='hidden' id='bno' name='bno' value='<c:out value="${board.bno}"/>'>
 				      				<input type='hidden' name='pageNum' value='<c:out value="${pageVO.pageNum}"/>'>
 				  	  				<input type='hidden' name='amount' value='<c:out value="${pageVO.amount}"/>'>
 				  	  				<input type='hidden' name='keyword' value='<c:out value="${pageVO.keyword}"/>'>
 				  	  				<input type='hidden' name='type' value='<c:out value="${pageVO.type}"/>'>
-				      			</form>
-				      				
-		       				
-		       					 
-						       <form id='operForm' action="/boad/modify" method="get">
-						       		<input type='hidden' id='bno' name='bno' value='<c:out value="${board.bno}"/>'>
-							   </form>         
-							</div>
-	                        
+				      	   		</div>	                        
 	                    </div>
 	                    <div class="col-md-6">
 	                        <div class="form-group">
 	                        	<label>&nbsp;내용</label>
 	                            <textarea name='content' class="form-control" style="width: 100%; height: 150px;"  readonly="readonly"><c:out value="${board.review}" /></textarea>
 	                        </div>
+	                        <div class="form-group">
+
+                         		<label class="d-felx">&nbsp;비밀번호&nbsp;</label>
+                         		
+                            	<input type="password" id="password" name="password" style="width: 30%; border-radius:1rem;  border-width: 1px; border-top-color: #f7f7f7;  border-left-color: #f7f7f7; text-align:center" />
+						</form>
+                        </div>
 	                    </div>
 	              </div>
 			</div>
@@ -86,16 +85,33 @@
 
 <%@include file="../includes/footer.jsp"%>
 
-<!--버튼 JS처리  -->
+
 <script type="text/javascript">
 $(document).ready(function() {
   
   var operForm = $("#operForm"); 
   
   $("button[data-oper='modify']").on("click", function(e){
-    
-    operForm.attr("action","/board/modify").submit();
-    
+    //패스워드 일치 여부 ajax 처리
+    if($("#password").val()==""){
+    	alert("비밀번호를 입력해주세요.");
+    	$("#password").focus();
+    	return false;
+    }
+    $.ajax({
+    	url : "/board/passChk",
+    	type : "POST",
+    	dataType : "json",
+    	data : operForm.serializeArray(),
+    	success : function(data){
+    		if(data == 0){
+    			alert("비밀번호가 틀렸습니다.");
+    			return;
+    		} else {
+    			operForm.attr("action","/board/modify").submit();
+    		}
+    	}
+    })   
   });//end modify
   
     

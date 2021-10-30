@@ -22,24 +22,22 @@ import lombok.extern.log4j.Log4j;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/main/webapp/WEB-INF/spring/root-context.xml")
 @Log4j
-public class ReviewMapperTest {
+public class ReviewMapperTest3 {
 
 	@Setter(onMethod_ = @Autowired)
 	private ReviewMapper mapper;
-	//Show list1
-	@Test
-	public void testGetList() {
-		log.info("getList1");
-		mapper.getList().forEach(review -> log.info(review));
-	}
-	//Show list2
-	@Test
-	public void testGetList2() {
-		log.info("getList2");
-		for (ReviewVO review : mapper.getList())
-			log.info(review);
-	}
 
+	@Test
+	public void testPaging() {		// 리뷰목록 처리를 위해 추가 작성
 
+		PageVO pageVO = new PageVO();
+		pageVO.setPageNum(3);
+		pageVO.setAmount(10);
+		
+		List<ReviewVO> list = mapper.getListWithPaging(pageVO);
+		
+		list.forEach(board -> log.info(board.getBno()));
+		
+	}//end testPaging
 	
 }

@@ -41,7 +41,7 @@
 						<div class="carousel-caption">
 							<div class="row">
 								<div class="col-sm-3">
-									<img src="/resources/assets/climbing.png"
+									<img src="/resources/assets/climbing<c:out value="${Math.round(Math.random() * 5)}"/>.png"
 										style='border-width: "10px"' alt=""
 										class="rounded-circle img-fluid" />
 								</div>
@@ -199,7 +199,6 @@
 					actionForm.submit(); //form submit
 				});//end click
 				
-			
 				
 			});//  end ready
 </script>

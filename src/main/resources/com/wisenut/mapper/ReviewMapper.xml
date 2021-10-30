@@ -107,6 +107,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		where m > (#{pageNum} - 1) * #{amount}
 		]]>
 	</select>
+	
+	<!-- 추가 작성자 : 정선  - 글 수정시 패스워드 일치 여부 체크 -->
+	<select id="passChk" resultType="int">
+		select count(*) from review_table
+		where bno = #{bno}
+		and password = #{password}
+	</select>
 
 </mapper> 
  

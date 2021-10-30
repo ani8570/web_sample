@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;//추가 작성자
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.wisenut.domain.PageDTO;
@@ -19,11 +20,11 @@ import lombok.extern.log4j.Log4j;
 
 /**
  * 
- * @author 조윤희, 이지훈
+ * @author 조윤희, 이지훈, 정선
  * @date 2021.10.28
  * @description : 각종 목록 페이징 처리 및 전체 데이터 개수 처리<br>
  * 검색처리를 위한 수정, 삭제 부분 처리
- * 					
+ * 글 수정시 패스워드 일치 여부 체크			
  * 
  **/
 
@@ -106,5 +107,13 @@ public class ReviewController {
 		rttr.addAttribute("keyword", pageVO.getKeyword());
 		return "redirect:/board/list";		
 	}//end remove
+	
+	// 패스워드 일치 체크
+	@ResponseBody
+	@PostMapping("/passChk")
+	public int passChk(ReviewVO reviewVO) throws Exception {
+		int result = service.passChk(reviewVO);
+		return result;
+	}
 
 }//end class

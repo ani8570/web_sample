@@ -36,4 +36,7 @@ public interface ReviewMapper {
 	 * @return success : 1, fail : 0
 	 */
 	public int delete(Long bno);
+	
+	/* 작성자 : 정선  - 글 수정시 패스워드 일치 여부 체크 */
+	public int passChk(ReviewVO reviewVO) throws Exception;
 }

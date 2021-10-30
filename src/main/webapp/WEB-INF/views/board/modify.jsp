@@ -31,8 +31,12 @@
           				<input type="hidden" class="form-control" name='bno' value='<c:out value="${board.bno }"/>' readonly="readonly">
           				
           				<!-- 추가 작성자 : 조윤희 - 페이징 정보 추가  -->	         				
-  		 				<input type='hidden' name='pageNum' value='<c:out value="${pageVO.pageNum}"/>'>
+
+						<input type='hidden' name='pageNum' value='<c:out value="${pageVO.pageNum}"/>'>
   	  	  				<input type='hidden' name='amount' value='<c:out value="${pageVO.amount}"/>'>
+  	  	  				<input type='hidden' name='keyword' value='<c:out value="${pageVO.keyword}"/>'>
+						<input type='hidden' name='type' value='<c:out value="${pageVO.type}"/>'>
+  	  	  				
   	  	  				<!-- 페이징 정보 완료 -->
         			</div>
                         <div class="form-group">
@@ -97,7 +101,8 @@
          							글 삭제
          				</button>
 				        <button data-oper='list' class="btn btn-info" style='border-radius: 1rem; color:white'>
-				        	<a href="/board/list" style='color:white'>리뷰 목록으로</a>
+				        	리뷰 목록으로<!--  <a href="/board/list" style='color:white'>리뷰 목록으로</a>
+				        	-->
 				        </button> 
                         </div>
                         
@@ -127,25 +132,29 @@ $(document).ready(function() {
 		  
 	    e.preventDefault();  //기본동작 막기[기본이 submit]	    
 	    var operation = $(this).data("oper");	    
-	    console.log(operation); //내용 출력
+	    console.log(operation); //명령 내용 출력
 	    
 	    if(operation === 'remove'){
 	      formObj.attr("action", "/board/remove");	      
 	    }else if(operation === 'list'){
 	      //move to list
 	      formObj.attr("action","/board/list" ).attr("method","get");
-	      
+	      //앞서 input을 받았다면 배열로 추가가 계속된다.
 	      var pageNumTag = $("input[name='pageNum']").clone();
 	      var amountTag = $("input[name='amount']").clone();
 	      var keywordTag = $("input[name='keyword']").clone();
 	      var typeTag = $("input[name='type']").clone();
-	      
+		  //가장 최근에 받은 것으로 불러옴		  
 	      formObj.empty();
-	      formObj.append(pageNumTag);
-	      formObj.append(amountTag);
-	      formObj.append(keywordTag);
+		  formObj.attr("action","/board/list" ).attr("method","get");
+	      formObj.append(pageNumTag.slice(-1)[0]);
+	      formObj.append(amountTag.slice(-1)[0]);
+	      formObj.append(keywordTag.slice(-1)[0]);
 	      formObj.append(typeTag);
+
+
 	    }//end if	    
+	    
 	    
 	    formObj.submit(); //form 
 	  });//end click

@@ -2,6 +2,9 @@ package com.wisenut.service;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
+import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,16 +18,20 @@ import lombok.extern.log4j.Log4j;
 
 /**
  * 
- * @author 조윤희
+ * @author 조윤희, 정선
  * @date 2021.10.28
  * @description : 각종 목록 페이징 처리 및 전체 데이터 개수 처리
+ * 글 수정시 패스워드 일치 여부 체크
  * 
  **/
+
+
 
 @Log4j
 @Service
 @AllArgsConstructor
 public class ReviewServiceImpl implements ReviewService {
+	
 	@Setter(onMethod_ = @Autowired)
 	private ReviewMapper mapper;
 
@@ -63,5 +70,12 @@ public class ReviewServiceImpl implements ReviewService {
 		log.info("get total count");
 		return mapper.getTotalCount(pageVO);
 	}//end getTotal
+	
+	// 패스워드 일치 체크
+	@Override
+	public int passChk(ReviewVO reviewVO) throws Exception {
+		int result = mapper.passChk(reviewVO);
+		return result;
+	}
 	
 }
