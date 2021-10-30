@@ -62,7 +62,12 @@
 				  	  				<input type='hidden' name='keyword' value='<c:out value="${pageVO.keyword}"/>'>
 				  	  				<input type='hidden' name='type' value='<c:out value="${pageVO.type}"/>'>
 				      			</form>
-				      	      
+				      				
+		       				
+		       					 
+						       <form id='operForm' action="/boad/modify" method="get">
+						       		<input type='hidden' id='bno' name='bno' value='<c:out value="${board.bno}"/>'>
+							   </form>         
 							</div>
 	                        
 	                    </div>
